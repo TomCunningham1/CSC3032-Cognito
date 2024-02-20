@@ -1,0 +1,35 @@
+image: ubuntu:18.04
+stages: 
+  - build
+  - lint
+  - test
+  - deploy
+  - post_deploy
+  - deploy_production
+
+build_test:
+  stage: build
+  script:
+    - npm install
+    - tsc
+
+format_test:
+  stage: lint 
+  script:
+    - npm install
+    - prettier --check  "lib/**/*.ts"
+    - prettier --check  "bin/**/*.ts"
+
+unit_test:
+  stage: test
+  script:
+    - npm install
+    - npm run test
+
+deploy_stack:
+  stage: deploy
+  script:
+    - npm install
+    - npm run build
+    - cdk synth
+    - cdk deploy --require-approval never
